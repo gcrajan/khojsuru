@@ -1,0 +1,7 @@
+# .gitignore
+
+# Ignore configuration files with sensitive data
+/includes/config.php
+
+# Ignore vendor folder managed by Composer
+/vendor/

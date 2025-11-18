@@ -1,0 +1,14 @@
+# Turn on the rewrite engine
+RewriteEngine On
+# Set the base directory for rewrites
+RewriteBase /recruitercv/
+
+# Use the custom 404 error page
+ErrorDocument 404 /recruitercv/404.php
+
+# This rule tells the server to route all requests that are not for an existing file
+# or directory through the index.php file. This is standard for clean URLs and
+# helps the server correctly locate files like 'edit_cv.php'.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
