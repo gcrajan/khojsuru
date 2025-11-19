@@ -15,7 +15,7 @@ define('DB_PASS', '6IldFifDcr8AnVD2aZYYDoqTaF84cmZK');
 // define('DB_PASS', '5qPXk9revbCYh');
 // --- BASE URL ---
 // Change this after deployment:
-define('BASE_URL', 'https://your-app.onrender.com/');
+define('BASE_URL', 'https://khojsuru-9dt0.onrender.com/');
 // define('BASE_URL', 'https://localhost/');
 
 // --- ROOT PATH ---
