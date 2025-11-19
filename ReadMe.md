@@ -1,0 +1,2 @@
+docker build -t myapp .
+docker run -d -p 80:80 --name myapp_container myapp

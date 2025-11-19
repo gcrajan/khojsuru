@@ -36,7 +36,7 @@
             FROM jobs j
             JOIN companies c ON j.company_id = c.id
             JOIN users u ON j.recruiter_user_id = u.id
-            WHERE j.is_active = 1 AND j.deadline > UTC_TIMESTAMP()"; // <-- CRITICAL CHANGE HERE
+            WHERE j.is_active = 1 AND j.deadline > NOW() AT TIME ZONE 'UTC'"; // <-- CRITICAL CHANGE HERE
 
     if (!empty($search_term)) {
         $sql .= " AND (j.title LIKE ? OR j.description LIKE ? OR c.name LIKE ?)";
