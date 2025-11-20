@@ -432,3 +432,10 @@ COMMENT ON TABLE pending_signups IS 'Pending user registrations with OTP verific
 
 COMMENT ON TABLE users IS 'System users table';
 -- COMMENT ON COLUMN users.skills_cache IS 'A comma-separated list of top skills for fast searching';
+
+
+
+-- FINAL REQUIRED INDEXES FOR ON CONFLICT TO WORK
+CREATE UNIQUE INDEX IF NOT EXISTS idx_pending_signups_email ON pending_signups (email);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_recruitee_ratings_unique ON recruitee_ratings (recruitee_user_id, recruiter_user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_recruiter_ratings_unique ON recruiter_ratings (recruiter_user_id, recruitee_user_id);
