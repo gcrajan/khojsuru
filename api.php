@@ -1150,11 +1150,25 @@ switch ($action) {
 
             $mail->isHTML(true);
             $mail->Subject = 'Your Khojsuru Verification Code';
-            $mail->Body    = "<h1>Your Verification Code</h1><p>Your OTP is: <b>{$otp}</b></p><p>This code will expire in 10 minutes.</p> <p>If you don't allow the use of this new email address as a sender, ignore this email.Also, do not reply to this mail as we won't be replying back.</p>";
+            $mail->Body    = "
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>
+                    <h2 style='color: #2563eb;'>Welcome to Khojsuru!</h2>
+                    <p>Your verification code is:</p>
+                    <h1 style='font-size: 42px; letter-spacing: 10px; text-align: center; color: #1e40af;'>
+                        <strong>{$otp}</strong>
+                    </h1>
+                    <p>This code expires in <strong>10 minutes</strong>.</p>
+                    <p>If you didn't request this, please ignore this email.</p>
+                    <hr>
+                    <small>Khojsuru – Nepal's Job Platform</small>
+                </div>
+            ";
+            $mail->AltBody = "Your verification code is: {$otp}. It expires in 10 minutes.";
+        
             $mail->send();
         } catch (Exception $e) {
-            error_log("Mailer Error: " . $mail->ErrorInfo);
-            json_error("Could not send verification email. Please try again later.");
+            error_log("Brevo SMTP Error: " . $mail->ErrorInfo);
+            json_error("Failed to send verification email. Please try again later.");
         }
         
         echo json_encode(['success' => true, 'message' => 'Verification OTP sent to your email.']);
