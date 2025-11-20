@@ -799,10 +799,20 @@ switch ($action) {
 
         try {
             if ($profile_user_type === 'recruitee' && $_SESSION['user_type'] === 'recruiter') {
-                $stmt = $pdo->prepare("INSERT INTO recruitee_ratings (recruitee_user_id, recruiter_user_id, rating) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE rating = VALUES(rating)");
+                $stmt = $pdo->prepare("
+                    INSERT INTO recruitee_ratings (recruitee_user_id, recruiter_user_id, rating)
+                    VALUES (?, ?, ?)
+                    ON CONFLICT (recruitee_user_id, recruiter_user_id) 
+                    DO UPDATE SET rating = EXCLUDED.rating
+                ");
                 $stmt->execute([$profile_user_id, $user_id, $rating]);
             } elseif ($profile_user_type === 'recruiter' && $_SESSION['user_type'] === 'recruitee') {
-                $stmt = $pdo->prepare("INSERT INTO recruiter_ratings (recruiter_user_id, recruitee_user_id, rating) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE rating = VALUES(rating)");
+                $stmt = $pdo->prepare("
+                    INSERT INTO recruiter_ratings (recruiter_user_id, recruitee_user_id, rating)
+                    VALUES (?, ?, ?)
+                    ON CONFLICT (recruiter_user_id, recruitee_user_id) 
+                    DO UPDATE SET rating = EXCLUDED.rating
+                ");
                 $stmt->execute([$profile_user_id, $user_id, $rating]);
             } else {
                 json_error('This rating action is not allowed.');
@@ -1128,10 +1138,15 @@ switch ($action) {
         ]);
 
         // Use INSERT...ON DUPLICATE KEY UPDATE to handle resend requests
-        $stmt = $pdo->prepare(
-            "INSERT INTO pending_signups (email, otp_hash, expires_at, form_data) VALUES (?, ?, ?, ?)
-             ON DUPLICATE KEY UPDATE otp_hash = VALUES(otp_hash), expires_at = VALUES(expires_at), form_data = VALUES(form_data)"
-        );
+        $stmt = $pdo->prepare("
+            INSERT INTO pending_signups (email, otp_hash, expires_at, form_data)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT (email) 
+            DO UPDATE SET 
+                otp_hash = EXCLUDED.otp_hash,
+                expires_at = EXCLUDED.expires_at,
+                form_data = EXCLUDED.form_data
+        ");
         $stmt->execute([$email, $otp_hash, $expires_at, $form_data]);
 
         // 3. Send the OTP email
@@ -1184,7 +1199,7 @@ switch ($action) {
         }
 
         // 2. Find the pending signup
-        $stmt = $pdo->prepare("SELECT * FROM pending_signups WHERE email = ? AND expires_at > UTC_TIMESTAMP()");
+        $stmt = $pdo->prepare("SELECT * FROM pending_signups WHERE email = ? AND expires_at > NOW()");
         $stmt->execute([$email]);
         $pending_user = $stmt->fetch();
 
